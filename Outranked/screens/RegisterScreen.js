@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import {
-  Alert,
-  Platform,
-  StyleSheet,
+  View,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
 } from 'react-native';
 import * as Google from 'expo-auth-session/providers/google';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import { AntDesign } from '@expo/vector-icons';
 
 export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
+
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId: 'YOUR_EXPO_CLIENT_ID.apps.googleusercontent.com',
     iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
@@ -21,19 +25,22 @@ export default function RegisterScreen({ navigation }) {
   });
 
   const handleRegister = () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill out all fields');
+    if (!email || !password || !repeatPassword) {
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
-
-    Alert.alert('Success', 'Account created!');
+    if (password !== repeatPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+    Alert.alert('Success', 'Registered successfully!');
     navigation.navigate('Login');
   };
 
   const handleGoogleSignUp = async () => {
     const result = await promptAsync();
     if (result?.type === 'success') {
-      Alert.alert('Signed in with Google', 'Welcome!');
+      Alert.alert('Google Sign-Up', 'Signed in successfully!');
       navigation.navigate('Main');
     }
   };
@@ -47,113 +54,170 @@ export default function RegisterScreen({ navigation }) {
         ],
       });
 
-      Alert.alert('Signed in with Apple', `Welcome, ${credential.fullName.givenName}!`);
+      Alert.alert('Apple Sign-Up', `Welcome, ${credential.fullName?.givenName || 'user'}!`);
       navigation.navigate('Main');
     } catch (e) {
       if (e.code === 'ERR_CANCELED') return;
-      Alert.alert('Apple Sign-In Error', e.message);
+      Alert.alert('Apple Sign-Up Error', e.message);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={styles.container}
+    >
+      <View style={styles.card}>
+        <Text style={styles.header}>Create account</Text>
+        <Text style={styles.subheader}>Please enter your details</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#888"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#888"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Sign Up</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.dividerText}>or sign up with</Text>
-
-      <TouchableOpacity
-        style={[styles.button, styles.googleButton]}
-        onPress={handleGoogleSignUp}
-      >
-        <Text style={styles.buttonText}>Sign Up with Google</Text>
-      </TouchableOpacity>
-
-      {Platform.OS === 'ios' && (
-        <AppleAuthentication.AppleAuthenticationButton
-          buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_UP}
-          buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-          cornerRadius={8}
-          style={{ height: 44, marginBottom: 16 }}
-          onPress={handleAppleSignUp}
+        <TextInput
+          style={styles.input}
+          placeholder="Your email"
+          placeholderTextColor="#7f8c8d"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
         />
-      )}
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#7f8c8d"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Repeat password"
+          placeholderTextColor="#7f8c8d"
+          secureTextEntry
+          value={repeatPassword}
+          onChangeText={setRepeatPassword}
+        />
 
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.linkText}>Already have an account? Log In</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+          <Text style={styles.registerButtonText}>Register</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.altText}>or sign up with</Text>
+
+        <TouchableOpacity style={[styles.socialButton, styles.google]} onPress={handleGoogleSignUp}>
+          <AntDesign name="google" size={20} color="#fff" style={{ marginRight: 8 }} />
+          <Text style={styles.socialText}>Sign up with Google</Text>
+        </TouchableOpacity>
+
+        {Platform.OS === 'ios' && (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_UP}
+            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+            cornerRadius={10}
+            style={styles.appleButton}
+            onPress={handleAppleSignUp}
+          />
+        )}
+
+        <Text style={styles.loginPrompt}>Already have an account?</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <View style={styles.loginBox}>
+            <Text style={styles.loginText}>Login</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
+    backgroundColor: '#dff6f2',
     justifyContent: 'center',
-    backgroundColor: '#f4f4f4',
+    alignItems: 'center',
+    padding: 20,
   },
-  title: {
-    fontSize: 28,
+  card: {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 24,
+    padding: 28,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 5,
+  },
+  header: {
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 32,
-    textAlign: 'center',
-    color: '#333',
+    color: '#00796b',
+    marginBottom: 6,
+  },
+  subheader: {
+    fontSize: 14,
+    color: '#777',
+    marginBottom: 24,
   },
   input: {
-    backgroundColor: '#fff',
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 20,
+    backgroundColor: '#f4f4f4',
+    borderRadius: 10,
+    padding: 14,
     fontSize: 16,
-  },
-  button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
     marginBottom: 16,
   },
-  googleButton: {
-    backgroundColor: '#db4437', // Google Red
+  registerButton: {
+    backgroundColor: '#00796b',
+    borderRadius: 10,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 10,
   },
-  buttonText: {
+  registerButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
-  dividerText: {
+  altText: {
     textAlign: 'center',
-    marginVertical: 12,
-    color: '#666',
+    color: '#777',
     fontSize: 14,
+    marginVertical: 12,
   },
-  linkText: {
+  socialButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    borderRadius: 10,
+    marginBottom: 12,
+  },
+  google: {
+    backgroundColor: '#db4437',
+  },
+  appleButton: {
+    height: 44,
+    marginBottom: 12,
+    width: '100%',
+  },
+  socialText: {
+    color: '#fff',
     fontSize: 16,
-    color: '#007bff',
+    fontWeight: '600',
+  },
+  loginPrompt: {
+    marginTop: 20,
     textAlign: 'center',
-    marginTop: 12,
+    color: '#555',
+  },
+  loginBox: {
+    backgroundColor: '#e0f2f1',
+    paddingVertical: 12,
+    marginTop: 8,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  loginText: {
+    color: '#00796b',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

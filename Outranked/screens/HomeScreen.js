@@ -9,7 +9,6 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
 
 const featuredChampions = [
   {
@@ -65,25 +64,22 @@ export default function HomeScreen() {
 
   const renderGuideItem = ({ item }) => (
     <TouchableOpacity
-      style={styles.guideCard}
+      style={styles.guideCardBox}
       onPress={() => navigation.navigate("GuideDetails", { guide: item })}
     >
-      <View style={{ flex: 1 }}>
-        <Text style={styles.cardTitle}>{item.title}</Text>
-        <Text style={styles.cardCategory}>{item.category}</Text>
-      </View>
-      <Ionicons name="chevron-forward-outline" size={20} color="#888" />
+      <Text style={styles.guideCardTitle}>{item.title}</Text>
+      <Text style={styles.guideCardCategory}>{item.category}</Text>
     </TouchableOpacity>
   );
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Welcome to Outranked</Text>
-      <Text style={styles.subheader}>Level up your League of Legends game</Text>
+      <Text style={styles.header}>Welcome Back, Summoner</Text>
+      <Text style={styles.subheader}>Sharpen your skills and climb the ranks</Text>
 
-      <Text style={styles.title}>FEATURED CHAMPIONS</Text>
+      <Text style={styles.title}>Featured Champions</Text>
       <Text style={styles.subtitle}>
-        Looking to try out a new champion? Here are some of our favorite picks!
+        Explore top picks from pro-level strategies and matchups.
       </Text>
 
       <FlatList
@@ -95,40 +91,52 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingVertical: 12 }}
       />
 
-      <Text style={styles.title}>LATEST GUIDES</Text>
+      <Text style={styles.title}>Latest Strategy Guides</Text>
+      <Text style={styles.subtitle}>
+        Updated guides to help you stay ahead of the meta.
+      </Text>
 
       <FlatList
+        horizontal
         data={guideData}
         keyExtractor={(item) => item.id}
         renderItem={renderGuideItem}
-        scrollEnabled={false}
+        showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 30 }}
       />
+      <View style={styles.dailyTipBox}>
+  <Text style={styles.dailyTipText}>
+    “Warding wins games. Control vision, control the map.”
+  </Text>
+</View>
+
     </ScrollView>
+    
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#e9ecf4",
+    backgroundColor: "#dff6f2",
     paddingHorizontal: 20,
     paddingTop: 40,
   },
   header: {
     fontSize: 28,
     fontWeight: "700",
-    color: "#1a1a1a",
+    color: "#00796b",
     marginBottom: 6,
   },
   subheader: {
     fontSize: 16,
-    color: "#5e5e5e",
+    color: "#555",
     marginBottom: 24,
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#ffc832",
+    color: "#00796b",
     marginTop: 16,
   },
   subtitle: {
@@ -139,7 +147,7 @@ const styles = StyleSheet.create({
 
   // Champion card styles
   championCard: {
-    backgroundColor: "#1a1b3b",
+    backgroundColor: "#00796b",
     borderRadius: 16,
     width: 160,
     marginRight: 16,
@@ -155,12 +163,12 @@ const styles = StyleSheet.create({
   cardName: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#ffc832",
+    color: "#a6f0c6",
     marginBottom: 4,
   },
   cardRole: {
     fontSize: 13,
-    color: "#ccc",
+    color: "#e0f7f4",
     textAlign: "center",
   },
   difficultyRow: {
@@ -172,7 +180,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: "#47afff",
+    backgroundColor: "#2ecc71",
     marginRight: 6,
   },
   difficultyText: {
@@ -180,30 +188,48 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 
-  // Guide card styles (no image)
-  guideCard: {
-    backgroundColor: "#fff",
-    padding: 18,
+  // Guide card (updated to match theme)
+  guideCardBox: {
+    backgroundColor: "#00796b",
     borderRadius: 16,
-    marginBottom: 16,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    width: 200,
+    marginRight: 16,
+    padding: 16,
+    justifyContent: "center",
     alignItems: "center",
+  },
+  guideCardTitle: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "#a6f0c6",
+    textAlign: "center",
+    marginBottom: 6,
+  },
+  guideCardCategory: {
+    fontSize: 13,
+    color: "#e0f7f4",
+    textAlign: "center",
+  },
 
+  // Daily tip
+  dailyTipBox: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 16,
+    marginTop: 20,
+    flexDirection: "row",
+    alignItems: "center",
     shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 5,
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#1f1f1f",
-    marginBottom: 4,
-  },
-  cardCategory: {
+  dailyTipText: {
     fontSize: 14,
-    color: "#888",
+    color: "#333",
+    marginLeft: 10,
+    flex: 1,
+    fontStyle: "italic",
   },
 });

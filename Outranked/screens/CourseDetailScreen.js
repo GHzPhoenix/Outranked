@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,25 +9,49 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CourseDetailScreen({ route }) {
   const { course } = route.params;
+  const navigation = useNavigation();
+
+  // Track if user has purchased the course (simulate)
+  const [isPurchased, setIsPurchased] = useState(!course.premium);
 
   const handleWatch = () => {
-    if (course.premium) {
-      Alert.alert("Premium Content", "This course is for premium users only.");
-    } else {
-      Alert.alert("Start Playing", "Course video will play here.");
-    }
+    Alert.alert("Course Playing", "Course video will play here.");
+  };
+
+  const handlePurchase = () => {
+    Alert.alert(
+      "Purchase Guide",
+      "Do you want to buy this premium guide?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Purchase",
+          onPress: () => {
+            setIsPurchased(true);
+            Alert.alert("Success", "You now have access to the guide.");
+          },
+        },
+      ]
+    );
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Ionicons name="arrow-back" size={26} color="#00796b" />
+      </TouchableOpacity>
+
       <Image source={course.thumbnail} style={styles.thumbnail} />
 
       <View style={styles.content}>
         <Text style={styles.title}>{course.title}</Text>
-        <Text style={styles.meta}>{course.author} • {course.role}</Text>
+        <Text style={styles.meta}>
+          {course.author} • {course.role}
+        </Text>
 
         <View style={styles.row}>
           <Text style={styles.difficulty}>{course.difficulty}</Text>
@@ -40,29 +64,43 @@ export default function CourseDetailScreen({ route }) {
         </View>
 
         <Text style={styles.description}>
-          This course dives deep into techniques and mechanics to improve your gameplay. Learn tips, rotations, and lane control from expert players.
+          This course dives deep into techniques and mechanics to improve your
+          gameplay. Learn tips, rotations, and lane control from expert players.
         </Text>
 
-        <TouchableOpacity
-          style={[
-            styles.watchButton,
-            course.premium && styles.disabledButton,
-          ]}
-          onPress={handleWatch}
-          disabled={course.premium}
-        >
-          <Text style={styles.watchText}>
-            {course.premium ? "Locked" : "Watch Now"}
-          </Text>
-        </TouchableOpacity>
+        {isPurchased ? (
+          <TouchableOpacity style={styles.watchButton} onPress={handleWatch}>
+            <Text style={styles.watchText}>Watch Now</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.purchaseButton} onPress={handlePurchase}>
+            <Text style={styles.purchaseText}>Purchase Guide</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </ScrollView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 40,
     backgroundColor: "#fff",
+    position: "relative",
+  },
+  backButton: {
+    position: "absolute",
+    top: 40,
+    left: 16,
+    zIndex: 10,
+    backgroundColor: "#fff",
+    padding: 6,
+    borderRadius: 20,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
   },
   thumbnail: {
     width: "100%",
@@ -75,6 +113,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     marginBottom: 6,
+    color: "#00796b",
   },
   meta: {
     fontSize: 14,
@@ -88,12 +127,12 @@ const styles = StyleSheet.create({
   },
   difficulty: {
     fontSize: 13,
-    color: "#007bff",
+    color: "#2ecc71",
     marginRight: 12,
   },
   premiumBadge: {
     flexDirection: "row",
-    backgroundColor: "#e63946",
+    backgroundColor: "#e74c3c",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 8,
@@ -110,15 +149,23 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   watchButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: "#00796b",
     paddingVertical: 14,
     borderRadius: 10,
     alignItems: "center",
   },
-  disabledButton: {
-    backgroundColor: "#ccc",
-  },
   watchText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  purchaseButton: {
+    backgroundColor: "#f39c12",
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  purchaseText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",

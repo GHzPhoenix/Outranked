@@ -14,7 +14,7 @@ export default function CourseCard({ course, onPress }) {
         <View style={styles.row}>
           <Text style={styles.difficulty}>{course.difficulty}</Text>
           {course.premium && (
-            <Ionicons name="lock-closed-outline" size={16} color="#e63946" />
+            <Ionicons name="lock-closed-outline" size={16} color="#e74c3c" />
           )}
         </View>
       </View>
@@ -29,6 +29,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     overflow: "hidden",
     elevation: 3,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
   },
   thumbnail: {
     width: "100%",
@@ -41,9 +45,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 4,
+    color: "#00796b", // Teal
   },
   meta: {
-    color: "#666",
+    color: "#777",
     marginBottom: 6,
   },
   row: {
@@ -53,6 +58,6 @@ const styles = StyleSheet.create({
   },
   difficulty: {
     fontSize: 13,
-    color: "#007bff",
+    color: "#2ecc71", // Light green
   },
 });
