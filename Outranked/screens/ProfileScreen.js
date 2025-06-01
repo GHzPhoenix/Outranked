@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const mockPurchases = [
@@ -13,25 +19,38 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Your Profile</Text>
+      <Text style={styles.header}>
+        <Ionicons name="person-circle-outline" size={28} color="#2e86de" /> Your Profile
+      </Text>
 
-      <Text style={styles.label}>Name</Text>
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-        placeholder="Enter your name"
-      />
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>
+          <Ionicons name="id-card-outline" size={16} color="#555" /> Name
+        </Text>
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          style={styles.input}
+          placeholder="Enter your name"
+        />
+      </View>
 
-      <Text style={styles.label}>Nickname</Text>
-      <TextInput
-        value={nickname}
-        onChangeText={setNickname}
-        style={styles.input}
-        placeholder="Enter your summoner name"
-      />
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>
+          <Ionicons name="game-controller-outline" size={16} color="#555" /> Nickname
+        </Text>
+        <TextInput
+          value={nickname}
+          onChangeText={setNickname}
+          style={styles.input}
+          placeholder="Enter your summoner name"
+        />
+      </View>
 
-      <Text style={styles.sectionHeader}>Purchase History</Text>
+      <Text style={styles.sectionHeader}>
+        <Ionicons name="receipt-outline" size={20} color="#2e86de" /> Purchase History
+      </Text>
+
       <FlatList
         data={mockPurchases}
         keyExtractor={(item) => item.id}
@@ -49,11 +68,10 @@ export default function ProfileScreen() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fc',
+    backgroundColor: '#f0f2f8',
     padding: 16,
   },
   header: {
@@ -62,11 +80,15 @@ const styles = StyleSheet.create({
     color: '#222',
     marginBottom: 20,
   },
+  inputGroup: {
+    marginBottom: 18,
+  },
   label: {
     fontSize: 14,
-    color: '#666',
-    marginTop: 12,
+    color: '#555',
     marginBottom: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
     borderWidth: 1,
@@ -74,16 +96,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 8,
     padding: 10,
+    fontSize: 15,
   },
   sectionHeader: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
-    marginTop: 30,
+    marginTop: 28,
     marginBottom: 10,
   },
   purchaseItem: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
@@ -99,6 +122,7 @@ const styles = StyleSheet.create({
   purchaseTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#222',
   },
   purchaseDate: {
     fontSize: 12,

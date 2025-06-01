@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
 import {
   Alert,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import * as Google from 'expo-auth-session/providers/google';
+import * as AppleAuthentication from 'expo-apple-authentication';
 
 export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId: 'YOUR_EXPO_CLIENT_ID.apps.googleusercontent.com',
+    iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
+    androidClientId: 'YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com',
+  });
 
   const handleRegister = () => {
     if (!email || !password) {
@@ -20,6 +28,31 @@ export default function RegisterScreen({ navigation }) {
 
     Alert.alert('Success', 'Account created!');
     navigation.navigate('Login');
+  };
+
+  const handleGoogleSignUp = async () => {
+    const result = await promptAsync();
+    if (result?.type === 'success') {
+      Alert.alert('Signed in with Google', 'Welcome!');
+      navigation.navigate('Main');
+    }
+  };
+
+  const handleAppleSignUp = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      Alert.alert('Signed in with Apple', `Welcome, ${credential.fullName.givenName}!`);
+      navigation.navigate('Main');
+    } catch (e) {
+      if (e.code === 'ERR_CANCELED') return;
+      Alert.alert('Apple Sign-In Error', e.message);
+    }
   };
 
   return (
@@ -47,6 +80,25 @@ export default function RegisterScreen({ navigation }) {
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
+
+      <Text style={styles.dividerText}>or sign up with</Text>
+
+      <TouchableOpacity
+        style={[styles.button, styles.googleButton]}
+        onPress={handleGoogleSignUp}
+      >
+        <Text style={styles.buttonText}>Sign Up with Google</Text>
+      </TouchableOpacity>
+
+      {Platform.OS === 'ios' && (
+        <AppleAuthentication.AppleAuthenticationButton
+          buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_UP}
+          buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+          cornerRadius={8}
+          style={{ height: 44, marginBottom: 16 }}
+          onPress={handleAppleSignUp}
+        />
+      )}
 
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.linkText}>Already have an account? Log In</Text>
@@ -84,14 +136,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
+  googleButton: {
+    backgroundColor: '#db4437', // Google Red
+  },
   buttonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
+  dividerText: {
+    textAlign: 'center',
+    marginVertical: 12,
+    color: '#666',
+    fontSize: 14,
+  },
   linkText: {
     fontSize: 16,
     color: '#007bff',
     textAlign: 'center',
+    marginTop: 12,
   },
 });
