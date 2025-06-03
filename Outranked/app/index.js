@@ -13,7 +13,7 @@ import CourseListScreen from "../screens/CourseListScreen";
 import CourseDetailScreen from "../screens/CourseDetailScreen";
 import GuideDetailsScreen from "../screens/GuideDetailsScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
-import UploadCourseScreen from "../screens/UploadCourseScreen";
+import UploadCourseScreen from "../screens/UploadCourseScreen.js";
 import { CourseProvider } from "../contexts/CourseContext";
 
 const Stack = createStackNavigator();

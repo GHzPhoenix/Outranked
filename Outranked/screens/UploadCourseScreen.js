@@ -3,6 +3,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'reac
 import { CourseContext } from '../contexts/CourseContext';
 import { useNavigation } from '@react-navigation/native';
 
+
 export default function UploadCourseScreen() {
   const { addCourse } = useContext(CourseContext);
   const navigation = useNavigation();
@@ -28,37 +29,43 @@ export default function UploadCourseScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Upload Course or Guide</Text>
-      <TextInput
-        placeholder="Title"
-        value={title}
-        onChangeText={setTitle}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Author"
-        value={author}
-        onChangeText={setAuthor}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Difficulty"
-        value={difficulty}
-        onChangeText={setDifficulty}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Role"
-        value={role}
-        onChangeText={setRole}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Price"
-        value={price}
-        onChangeText={setPrice}
-        style={styles.input}
-        keyboardType="numeric"
-      />
+   <TextInput
+  placeholder="Title"
+  placeholderTextColor="#00796b"
+  value={title}
+  onChangeText={setTitle}
+  style={styles.input}
+/>
+<TextInput
+  placeholder="Author"
+  placeholderTextColor="#00796b"
+  value={author}
+  onChangeText={setAuthor}
+  style={styles.input}
+/>
+<TextInput
+  placeholder="Difficulty"
+  placeholderTextColor="#00796b"
+  value={difficulty}
+  onChangeText={setDifficulty}
+  style={styles.input}
+/>
+<TextInput
+  placeholder="Role"
+  placeholderTextColor="#00796b"
+  value={role}
+  onChangeText={setRole}
+  style={styles.input}
+/>
+<TextInput
+  placeholder="Price"
+  placeholderTextColor="#00796b"
+  value={price}
+  onChangeText={setPrice}
+  style={styles.input}
+  keyboardType="numeric"
+/>
+
       <TouchableOpacity style={styles.button} onPress={handleUpload}>
         <Text style={styles.buttonText}>Upload</Text>
       </TouchableOpacity>
@@ -80,6 +87,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#fff',
+    color: '#00796b',
     borderRadius: 8,
     padding: 10,
     marginBottom: 12,
