@@ -1,12 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { courses } from "../data/courses";
 import CourseCard from "../components/CourseCard";
-import { CourseContext } from "../contexts/CourseContext";
 
 export default function CourseListScreen() {
   const navigation = useNavigation();
-  const { courses } = useContext(CourseContext);
 
   return (
     <View style={styles.container}>
